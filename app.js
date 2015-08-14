@@ -35,9 +35,7 @@ app.get('/', function(req, res) {
 });
 
 app.post('/upload', upload.single('photo'), function(req, res) {
-	console.log(req.file);
-	// res.redirect('uploads/' + req.file.originalname);
-
+	// console.log(req.file);
 	im.crop({
 		srcPath: 'public/uploads/raw/' + req.file.originalname,
 		dstPath: 'public/uploads/tmp/' + req.file.originalname,
