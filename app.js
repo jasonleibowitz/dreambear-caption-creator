@@ -47,7 +47,7 @@ app.post('/upload', upload.single('photo'), function(req, res) {
 		if (err) throw err;
 		im.convert(['public/uploads/tmp/' + req.file.originalname, '-gravity', 'South', '-fill', 'rgba(0,0,0,.5)', '-draw', 'rectangle +0+170+366+244', '-fill', 'white', '-font', 'Helvetica', '-gravity', 'South', '-pointsize', '15', '-annotate', '+0+30', req.body.textCaption, 'public/uploads/final/' + req.file.originalname], function(err, stdout) {
 			if (err) throw err;
-			console.log('stdout: ', stdout);
+			// console.log('stdout: ', stdout);
 			// res.render("index.ejs");
 			fs.unlinkSync("public/uploads/tmp/" + req.file.originalname);
 			fs.unlinkSync("public/uploads/raw/" + req.file.originalname);
