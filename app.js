@@ -1,5 +1,6 @@
 var express = require('express');
-var im = require('imagemagick');
+// var im = require('imagemagick');
+var gm = require('gm').subClass({imageMagick: true});
 var path = require('path');
 var fs = require('fs');
 var multer = require('multer');
@@ -32,57 +33,39 @@ app.use("/images", express.static(__dirname + '/public/images'));
 app.use("/uploads", express.static(__dirname + '/public/uploads'));
 
 app.get('/', function(req, res) {
-	// res.writeHead(200, {'Content-Type': 'text/html'});
-    console.log('path: ' + AWS_PATH);
-
 	res.render('index.ejs');
 });
 
 app.post('/upload', upload.single('photo'), function(req, res) {
-	// console.log('inside upload:', req.file);
     var filename = req.file.originalname;
+    console.log('raw image: ', AWS_PATH + 'raw/' + filename);
+    console.log('from: ', AWS_PATH + 'raw/' + filename);
+    console.log('to: ', AWS_PATH + 'final/' + req.file.originalname.replace(" ", "%2B"));
 
-	// im.crop({
-	// 	srcPath: AWS_PATH + 'raw/' + filename,
-	// 	dstPath: AWS_PATH + 'tmp/' + + filename,
-	// 	width: 366,
-	// 	height: 244,
-	// 	quality: 1,
-	// 	gravity: 'Center'
-	// }, function(err, stdout, stderr) {
-	// 	if (err) throw err;
-	// 	im.convert([AWS_PATH + 'temp/' + filename, '-gravity', 'South', '-fill', 'rgba(0,0,0,.5)', '-draw', 'rectangle +0+170+366+244', '-fill', 'white', '-font', 'Helvetica', '-gravity', 'South', '-pointsize', '15', '-annotate', '+0+30', req.body.textCaption, AWS_PATH + 'final/' + filename], function(err, stdout) {
-	// 		if (err) throw err;
-	// 		// fs.unlinkSync("public/uploads/tmp/" + req.file.originalname);
-	// 		// fs.unlinkSync("public/uploads/raw/" + req.file.originalname);
-	// 		res.redirect('uploads/final/' + req.file.originalname)
-	// 	});
-	// });
-
-    im.crop({
-		srcPath: AWS_PATH + 'raw/' + filename,
-		dstPath: 'uploads/tmp/test',
-		width: 366,
-		height: 244,
-		quality: 1,
-		gravity: 'Center'
-	}, function(err, stdout, stderr) {
-		if (err) throw err;
-
-        s3bucket.putObject({
-            Key: 'tmp/test.jpg',
-            Body: new Buffer(stdout, 'binary'),
-            ContentType: 'image/jpeg'
-        }, function(err, data) {
-            if (err) {
-                console.log('Failing to save to S3: ', err);
-            } else {
-                console.log('uploaded to s3');
-            }
-        })
-	});
-
-
+    gm(AWS_PATH + 'raw/' + filename)
+        .resize(null, 366)
+        .gravity('Center')
+        .crop(366, 244, 0, 0)
+        .fill('rgba(0,0,0,.7)')
+        .drawRectangle(0, 185, 366, 244)
+        .fill('#FFFFFF')
+        .font("Helvetica-Bold")
+        .fontSize(15)
+        .drawText(0, 93, req.body.textCaption, 'Center')
+        .toBuffer('JPG', function(err, buffer) {
+                s3bucket.putObject({
+                    Key: 'final/' + filename,
+                    Body: buffer,
+                    ContentType: 'image/jpeg'
+                }, function(err, data) {
+                    if (err) {
+                        console.log('Failing to save to S3: ', err);
+                    } else {
+                        console.log('uploaded temp to s3');
+                        res.render('photo.ejs', { imageName: req.file.originalname });
+                    }
+                })
+        });
 });
 
 var server = app.listen(process.env.PORT || 3000, function() {
