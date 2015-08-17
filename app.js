@@ -22,8 +22,8 @@ var upload = multer({
     storage: s3({
         dirname: './raw/',
         bucket: 'dreambear-captions',
-        secretAccessKey: "fZhQOYRyGUdWPIPAekX4d4acHKfh8InXloJM7GXW",
-        accessKeyId: "AKIAJFKOBOO2UC2YJ57A",
+        secretAccessKey: process.env.AWS_SECRET,
+        accessKeyId: process.env.AWS_ACCESS_KEY,
         region: 'us-east-1',
     })
 });
