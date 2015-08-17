@@ -6,6 +6,7 @@ var fs = require('fs');
 var multer = require('multer');
 var s3 = require('multer-s3');
 var AWS = require('aws-sdk');
+var favicon = require('serve-favicon');
 
 var accessKeyId = process.env.AWS_ACCESS_KEY || "AKIAJFKOBOO2UC2YJ57A";
 var secretAccessKey = process.env.AWS_SECRET_KEY || "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";
@@ -29,6 +30,7 @@ var upload = multer({
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view enginer', 'ejs');
+app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use("/images", express.static(__dirname + '/public/images'));
 app.use("/uploads", express.static(__dirname + '/public/uploads'));
 app.use("/css", express.static(__dirname + '/public/css'));

@@ -19,7 +19,8 @@
     "gm": "^1.18.1",
     "imagemagick": "^0.1.3",
     "multer": "^1.0.3",
-    "multer-s3": "^1.2.1"
+    "multer-s3": "^1.2.1",
+    "serve-favicon": "^2.3.0"
   },
   "engines": {
     "node": "0.12.0"
