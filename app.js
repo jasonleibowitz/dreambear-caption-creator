@@ -12,7 +12,12 @@ var accessKeyId = process.env.AWS_ACCESS_KEY || "AKIAJFKOBOO2UC2YJ57A";
 var secretAccessKey = process.env.AWS_SECRET_KEY || "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";
 
 var app = express();
-AWS.config.loadFromPath('./aws-config.json');
+// AWS.config.loadFromPath('./aws-config.json');
+AWS.config.credentials = {
+    	"accessKeyId": process.env.AWS_ACCESS_KEY,
+    	"secretAccessKey": process.env.AWS_SECRET,
+    	"region": "us-east-1"
+    };
 var s3bucket = new AWS.S3({params: {Bucket: 'dreambear-captions', Body: 'EXPECTED CONTENTS'}});
 
 const AWS_PATH = 'https://s3.amazonaws.com/dreambear-captions/';
