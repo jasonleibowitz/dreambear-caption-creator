@@ -48,7 +48,7 @@ app.post('/upload', upload.single('photo'), function(req, res) {
         .resize(null, 366)
         .gravity('Center')
         .crop(366, 244, 0, 0)
-        .fill('rgba(0,0,0,.7)')
+        .fill('rgba(0,0,0,.8)')
         .drawRectangle(0, 180, 366, 244)
         .fill('#FFFFFF')
         .font("Helvetica-Bold")
