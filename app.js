@@ -41,7 +41,7 @@ app.get('/', function(req, res) {
 });
 
 app.post('/upload', upload.single('photo'), function(req, res) {
-    var filename = req.file.originalname.replace(" ", "+");
+    var filename = req.file.originalname.replace(/\s/g, "+");
 
     gm(AWS_PATH + 'raw/' + filename)
         .resize(null, 366)
@@ -63,7 +63,7 @@ app.post('/upload', upload.single('photo'), function(req, res) {
                         console.log('Failed to save to S3: ', err);
                     } else {
                         console.log("Successfully edited and uploaded: " + filename);
-                        res.render('photo.ejs', { imagePath: AWS_PATH + 'final/' + req.file.originalname.replace(" ", "%2B") });
+                        res.render('photo.ejs', { imagePath: AWS_PATH + 'final/' + req.file.originalname.replace(/\s/g, "%2B") });
                     }
                 })
         });
