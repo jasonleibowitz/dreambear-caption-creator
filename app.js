@@ -31,13 +31,15 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view enginer', 'ejs');
 app.use("/images", express.static(__dirname + '/public/images'));
 app.use("/uploads", express.static(__dirname + '/public/uploads'));
+app.use("/css", express.static(__dirname + '/public/css'));
+app.use("/js", express.static(__dirname + '/public/js'));
 
 app.get('/', function(req, res) {
 	res.render('index.ejs');
 });
 
 app.post('/upload', upload.single('photo'), function(req, res) {
-    var filename = req.file.originalname;
+    var filename = req.file.originalname.replace(" ", "+");
     console.log('raw image: ', AWS_PATH + 'raw/' + filename);
     console.log('from: ', AWS_PATH + 'raw/' + filename);
     console.log('to: ', AWS_PATH + 'final/' + req.file.originalname.replace(" ", "%2B"));
@@ -47,7 +49,7 @@ app.post('/upload', upload.single('photo'), function(req, res) {
         .gravity('Center')
         .crop(366, 244, 0, 0)
         .fill('rgba(0,0,0,.7)')
-        .drawRectangle(0, 185, 366, 244)
+        .drawRectangle(0, 180, 366, 244)
         .fill('#FFFFFF')
         .font("Helvetica-Bold")
         .fontSize(15)
@@ -62,7 +64,7 @@ app.post('/upload', upload.single('photo'), function(req, res) {
                         console.log('Failing to save to S3: ', err);
                     } else {
                         console.log('uploaded temp to s3');
-                        res.render('photo.ejs', { imageName: req.file.originalname });
+                        res.render('photo.ejs', { imagePath: AWS_PATH + 'final/' + req.file.originalname.replace(" ", "%2B") });
                     }
                 })
         });

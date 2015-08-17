@@ -1,2 +1,26 @@
-<h1>Test</h1>
-<img src="https://s3.amazonaws.com/dreambear-captions/final/<%- imageName %>" alt="" />
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    	<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Dreambear Caption Creator</title>
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="css/bootstrap-theme.min.css" rel="stylesheet">
+	</head>
+	<body>
+		<div class="container">
+
+			<div class="col-sm-8 col-sm-offset-2">
+				<h1 class="text-center">Here is Your Edited Photo</h1>
+				<br>
+				<p class="text-center">To save this file either drag it to your computer or right-click on it then click Save As.</p>
+				<br>
+				<img src="<%- imagePath %>" class="img-responsive center-block" alt="Responsive image" />
+			</div>
+
+		</div>
+	</body>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+</html>
