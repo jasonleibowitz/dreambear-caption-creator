@@ -1,3 +1,5 @@
+[![bitHound Score](https://www.bithound.io/github/jasonleibowitz/dreambear-caption-creator/badges/score.svg)](https://www.bithound.io/github/jasonleibowitz/dreambear-caption-creator/master)
+
 # Dreambear Caption Creator
 
 This is a simple Node/Express app that uses graphicsmagick to resize, crop, and add a caption to uploaded images. Dimensions are pre-configured to make a consistent theme for exported images. Text caption are taken from the upload form. All images are saved to AWS S3.
