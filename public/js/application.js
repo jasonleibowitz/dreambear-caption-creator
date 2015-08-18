@@ -3,5 +3,5 @@ $(document).on('ready', function() {
 		$(".container").children().fadeOut();
 		var spinner = new Spinner().spin();
 		$(".container").append(spinner.el);
-	})
-})
+	});
+});

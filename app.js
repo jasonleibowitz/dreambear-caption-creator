@@ -67,7 +67,7 @@ app.post('/upload', upload.single('photo'), function(req, res) {
                         console.log("Successfully edited and uploaded: " + filename);
                         res.render('photo.ejs', { imagePath: AWS_PATH + 'final/' + req.file.originalname.replace(/\s/g, "%2B") });
                     }
-                })
+                });
         });
 });
 
