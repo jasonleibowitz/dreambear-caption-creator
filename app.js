@@ -8,9 +8,6 @@ var s3 = require('multer-s3');
 var AWS = require('aws-sdk');
 var favicon = require('serve-favicon');
 
-var accessKeyId = process.env.AWS_ACCESS_KEY || "AKIAJFKOBOO2UC2YJ57A";
-var secretAccessKey = process.env.AWS_SECRET_KEY || "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";
-
 var app = express();
 // AWS.config.loadFromPath('./aws-config.json');
 AWS.config.credentials = {
