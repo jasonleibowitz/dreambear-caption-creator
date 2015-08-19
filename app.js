@@ -43,32 +43,55 @@ app.get('/', function(req, res) {
 });
 
 app.post('/upload', upload.single('photo'), function(req, res) {
-    var filename = req.file.originalname.replace(/\s/g, "+");
-
-    gm(AWS_PATH + 'raw/' + filename)
-        .resize(null, 366)
-        .gravity('Center')
-        .crop(366, 244, 0, 0)
-        .fill('rgba(0,0,0,.8)')
-        .drawRectangle(0, 180, 366, 244)
-        .fill('#FFFFFF')
-        .font("Helvetica-Bold")
-        .fontSize(15)
-        .drawText(0, 93, req.body.textCaption, 'Center')
-        .toBuffer('JPG', function(err, buffer) {
+    if (req.body.imageType == 'videoThumbnail') {
+        var filename = req.file.originalname.slice(0, -4).replace(/\s/g, "+");
+        var extension = req.file.originalname.slice(-4);
+        gm(AWS_PATH + 'raw/' + filename + extension)
+            .resize(null, 366)
+            .gravity('Center')
+            .crop(366, 244, 0, 0)
+            .fill('rgba(0,0,0,.8)')
+            .drawRectangle(0, 180, 366, 244)
+            .fill('#FFFFFF')
+            .font("Helvetica-Bold")
+            .fontSize(15)
+            .drawText(0, 93, req.body.textCaption, 'Center')
+            .toBuffer('JPG', function(err, buffer) {
+                    s3bucket.putObject({
+                        Key: 'final/' + filename + extension,
+                        Body: buffer,
+                        ContentType: 'image/jpeg'
+                    }, function(err, data) {
+                        if (err) {
+                            console.log('Failed to save to S3: ', err);
+                        } else {
+                            console.log("Successfully edited and uploaded: " + filename + extension);
+                            res.render('photo.ejs', { imagePath: AWS_PATH + 'final/' + req.file.originalname.replace(/\s/g, "%2B") });
+                        }
+                    });
+            });
+    } else {
+        var filename = req.file.originalname.slice(0, -4).replace(/\s/g, "+");
+        var extension = req.file.originalname.slice(-4);
+        gm(AWS_PATH + 'raw/' + filename + extension)
+            .fuzz('10%')
+            .transparent('#ffffff')
+            .recolor('0 0 0, 0 0 0, 0 0 0')
+            .toBuffer('PNG', function(err, buffer) {
                 s3bucket.putObject({
-                    Key: 'final/' + filename,
+                    Key: 'final/' + filename + ".png",
                     Body: buffer,
-                    ContentType: 'image/jpeg'
+                    ContentType: 'image/png'
                 }, function(err, data) {
                     if (err) {
                         console.log('Failed to save to S3: ', err);
                     } else {
-                        console.log("Successfully edited and uploaded: " + filename);
-                        res.render('photo.ejs', { imagePath: AWS_PATH + 'final/' + req.file.originalname.replace(/\s/g, "%2B") });
+                        console.log("Successflly edited and uploaded: " + filename + ".png");
+                        res.render('photo.ejs', { imagePath: AWS_PATH + 'final/' + req.file.originalname.slice(0, -4).replace(/\s/g, "%2B") + ".png" });
                     }
                 });
-        });
+            });
+    }
 });
 
 var server = app.listen(process.env.PORT || 3000, function() {
