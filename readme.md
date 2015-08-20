@@ -4,6 +4,8 @@
 
 This is a simple Node/Express app that uses graphicsmagick to resize, crop, and add a caption to uploaded images. Dimensions are pre-configured to make a consistent theme for exported images. Text caption are taken from the upload form. All images are saved to AWS S3.
 
+The site is currently live on Heroku at [http://dreambear-captions.herokuapp.com/](http://dreambear-captions.herokuapp.com/).
+
 ## Installation
 
 To save your own copy of this project fork the repo and run ```npm install``` on the repo to install all required node modules.
